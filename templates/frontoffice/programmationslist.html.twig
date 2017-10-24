@@ -8,18 +8,30 @@
 
     <h1>List of programmations</h1>
 
-    {% if programmationslist is not empty %}
-        <p>Here are all your programmations:</p>
+{% if programmationslist is not empty %}
+	<p>Here are all your programmations:</p>
         <ul>
         {# Loop through list and creeate the list of programmation items. #}
-        {% for programmation in programmationslist %}
-            <li>
-          		<a href=" {{ path('programmationshow', { 'id' : programmation.id }) }}">{{ programmation.circuit.description }} le {{ programmation.dateDepart|date('d-m-Y')  }}</a>
-           </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>Sorry, you don't have any programmations yet!</p>
-    {% endif %}    
+	<div class="container-fluid text-center bg-grey">
+		<div class="row text-center">
+			{% for programmation in programmationslist %}
+ 	          		<a href=" {{ path('programmationshow', { 'id' : programmation.id }) }}">
+					<div class="col-sm-4">
+      						<div class="thumbnail">
+        					<img src="templates/frontoffice/images/{{ programmation.circuit.description }}.jpg" alt="{{ programmation.circuit.description }}" width="6000" height="450">
 
-    {% endblock %} {# main #}
+						<p><strong>{{ programmation.circuit.description }} </strong></p>
+						<p> {{ programmation.dateDepart|date('d-m-Y')  }} </p>
+						</div>
+    					</div>
+				</a>
+			{% endfor %}
+       
+		</div>
+	</div>
+	</ul>
+{% else %}
+        <p>Sorry, you don't have any programmations yet!</p>
+{% endif %}    
+
+{% endblock %} {# main #}
