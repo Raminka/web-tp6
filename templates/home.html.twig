@@ -9,32 +9,44 @@
 
 {% block style %}
  <style>
-	
-body{
- 	background-image: url("/templates/frontoffice/tourisme.jpg");
-        background-repeat:no-repeat;
-	background-position:50% -10%;
-	background-size: cover;
-position: fixed;
-	}
 {font-size: 16px;}
-  .margin {margin-bottom: 80px;
+  .margin {margin-bottom: 400px;
 
 }
+	
+.bg-1{
+ 	background-image: url("/templates/frontoffice/tourisme.jpg");
+        background-repeat:no-repeat;
+	background-position:0% 0%;
+	background-size: cover;
+position: absolute; width: cover;
+ left: 0px; right: 0px;
 
-    .bg-2 { 
+.navbar {
+		
+    		margin-bottom: 80px;
+     		border-radius: 0;
+      		background: linear-gradient( DarkGray, black  );
+      		
+      		left: 0em;
+}
+
+	}
+
+    .bg-4 { 
       background-color: black;
 	opacity: 0.74;
 	color: #ffffff; 
+
       
 
-position: absolute; width: cover;
+position: absolute;
  left: 0px; right: 0px;  }
 
   .container-fluid {
       padding-top: 0px;
       padding-bottom: 0px;
-
+	
 
   }
 
@@ -61,7 +73,10 @@ position: absolute; width: cover;
       						<ul class="nav navbar-nav">
 							<li><a href="{{ path('circuitlist') }}"><span class="sidebar-text">Liste des circuits</span></a></li>
 							<li><a  href="{{ path('programmationlist') }}"><span class="sidebar-text">Liste des circuits programmés</span></a></li>
-    							
+
+<li><a  href="{{ path('news') }}"><span class="sidebar-text">Actualités</span></a></li>
+       							
+
 						</ul>
       						<ul class="nav navbar-nav navbar-right">
         						<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -82,21 +97,24 @@ position: absolute; width: cover;
 {% block main %}
    <div> 
 {{ block('style') }}
+
+
+<div class="container-fluid bg-1">
+
+   <h1 class="margin"> AgenceVoyage</h1>
+</div>
 </div>
 
- <h1>AgenceVoyage</h1>
 
-<br><br><br><br><br><br>
 <br><br><br><br>
-
-<div class="container-fluid bg-2 text-center">
-  <h2 class="margin">  <strong>Voyagez en toute tranquilité et découvrez le monde! </strong></h2>
- 	<p></p>
+<div class="container-fluid bg-4 text-center">
+  <h2 >  <strong>Voyagez en toute tranquilité et découvrez le monde! </strong></h2>
+ 	
 </div> </div> 
-<br><br><br>
+<br>
 
 
- <div class="col-sm-11">
+ <div class="col-sm-12">
 
         <h3 class="margin" ></h3>
         
