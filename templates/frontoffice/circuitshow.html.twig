@@ -9,23 +9,60 @@
 {% block title %}{{ parent() }} - Details for circuit {{ id }}{% endblock %}
 
 {% block main %}
+
+
+
+    <style>
+
+        p {font-size: 16px;}
+        .margin {margin-bottom: 45px;}
+        .bg-1 {
+        {# background-color: #1abc9c; /* Green */#}
+            color: #1abc9c;
+        }
+        .bg-2 {
+        {# background-color: #1abc9c; /* Green */#}
+            color: #2B81AF;
+        }
+        .bg-3 {
+        {# background-color: #1abc9c; /* Green */#}
+            color: #FF4136;
+        }
+        .bg-4 {
+        {# background-color: #1abc9c; /* Green */#}
+            color: #85144B;
+        }
+    </style>
     
     {# <pre>{{ dump(circuit) }}</pre> #}
-    
-	<h1>{{ circuit.description }}</h1>
 
-		<h2>Détails du circuit</h2>
+	<!-- First Container -->
+	<div class="container-fluid bg-1 text-center">
+		<h1 class="margin">{{ circuit.description }}</h1>
+    </div>
 
-		<dl class="dl-horizontal">
-  			<dt>Description</dt>	<dd>{{ circuit.description }}</dd>
-  			<dt>Pays</dt> <dd>{{ circuit.paysDepart }}</dd>
-  			<dt>Durée</dt>	<dd>{{ circuit.dureeCircuit }} j.</dd>
-			<dt>Ville de départ</dt> <dd>{{ circuit.villeDepart }}</dd> 
-			<dt>Ville d'arrivée</dt> <dd>{{ circuit.villeArrivee }}</dd>
-		</dl>
+
+
+    <!-- Second Container -->
+    <div class="container-fluid bg-2 text-center">
+        <h2 class=""margin">Détails du circuit</h2>
+
+        <dl class="dl-horizontal">
+            <dt>Description</dt>	<dd>{{ circuit.description }}</dd>
+            <dt>Pays</dt> <dd>{{ circuit.paysDepart }}</dd>
+            <dt>Durée</dt>	<dd>{{ circuit.dureeCircuit }} j.</dd>
+            <dt>Ville de départ</dt> <dd>{{ circuit.villeDepart }}</dd>
+            <dt>Ville d'arrivée</dt> <dd>{{ circuit.villeArrivee }}</dd>
+        </dl>
+    </div>
+
+
+<!-- 3rd Container -->
+<div class="container-fluid bg-3 text-center">
+
 
         {% if circuit.etapes is not empty %}
-  			<h2>&Eacute;tapes de ce circuit</h2>
+  			<h2 class=""margin">&Eacute;tapes de ce circuit</h2>
         		<table class="table">
                 	<thead>
                         <tr>
@@ -45,9 +82,15 @@
         {% else %}
     		<p>Désolé : pas de données concernant les étapes de ce circuit pour l'instant.</p>
         {% endif %}
-        
+
+</div>
+
+
+    <!-- 4th Container -->
+    <div class="container-fluid bg-4 text-center">
+
         {% if circuit.programmations is not empty %}
-			 <h2>Programmations de ce circuit</h2>
+			 <h2 class="margin">Programmations de ce circuit</h2>
              {# <pre>{{ dump(circuit) }}</pre> #}
      			<table class="table">
      	 			<thead>
@@ -68,5 +111,5 @@
             {% else %}
     			<p>Désolé : pas encore de dates programmées pour ce circuit.</p>
             {% endif %}
-
+    </div>
 {% endblock %} {# main #}
