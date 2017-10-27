@@ -25,6 +25,14 @@ $app->get('/admin', function () use ($app) {
     
 })->bind('admin_home');
 
+
+
+$app->get('/admin_connexion', function () use ($app) {
+
+    return $app['twig']->render('backoffice/admin_connexion.html.twig');
+
+})->bind('admin_connexion');
+
 // Below, we use the approach of binding closures to variable names to ease their 
 // spotting in the IDE. This may not be the best writing style, though. 
 
@@ -332,4 +340,168 @@ $app->delete('/admin/etape/{id}', $admin_etapedelete_action)
 // Programmations
 //-----------------------
 
-// TODO : actions
+// programmationlist : liste tous les circuits programmés
+$app->get ( '/admin/programmation',
+    function () use ($app)
+    {
+        $programmationslist = get_all_programmations ();
+
+        return $app ['twig']->render ( 'backoffice/programmationlist.html.twig', [
+            'programmationslist' => $programmationslist
+        ] );
+    }
+)->bind ( 'admin_programmationlist' );
+
+
+/**
+ * @var \Closure $admin_programmationshow
+ *
+ * affiche les détails d'une programmation (backoffice)
+ */
+$admin_programmationshow = function ($id) use ($app)
+{
+    $programmations = get_programmation_by_id( $id );
+
+    return $app ['twig']->render ( 'backoffice/programmationshow.html.twig', [
+        'id' => $id,
+        'programmation' => $programmations
+    ] );
+};
+$app->get( '/admin/programmation/{id}', $admin_programmationshow)
+    ->bind ( 'admin_programmationshow' );
+
+/*
+ * Fonction utilitaire créant un formulaire pour une Programmation d'un circuit
+ */
+function programmationnewget_form($app)
+{
+    // On préfère une variante compacte
+    $form = $app['form.factory']->createBuilder(FormType::class)
+        ->add('circuit_id')
+        ->add('dateDepart')
+        ->add('nbrPersonne')
+        ->add('prix')
+        ->getForm();
+    return $form;
+}
+
+/**
+ * @var \Closure $admin_programmationnew_getaction
+ *
+ * Affichage d'un formulaire d'ajout d'une nouvelle programmation
+ *
+ * Voir $admin_programmationnew_postaction pour gestion du POST correspondant
+ */
+$admin_programmationnew_getaction = function() use ($app)
+{
+    $formulaire = programmationnewget_form($app);
+
+    $formview = $formulaire->createView();
+
+    // display the form
+    return $app['twig']->render('backoffice/programmationnew.html.twig',
+        array('formulaire' => $formview)
+    );
+};
+
+$app->get ( '/admin/programmationnew', $admin_programmationnew_getaction
+    )->bind('admin_programmationnew');
+
+/**
+ * @var \Closure $admin_programmationnew_postaction
+ *
+ * Soumission d'un formulaire d'ajout d'un nouvelle programmation (POST)
+ */
+$admin_programmationnew_postaction = function(Request $request) use ($app)
+{
+    $form = programmationnewget_form($app);
+
+    $form->handleRequest($request);
+
+    // Data is supposed to be valid, but we actually don't use validators
+    if ($form->isValid())
+    {
+        $data = $form->getData();
+
+        add_programmation($data['circuit_id'],
+            $data['dateDepart'],
+            $data['nbrPersonne'],
+            $data['prix']
+        );
+
+        // Make sure message will be displayed after redirect
+        $app['session']->getFlashBag()->add('message', 'programmation bien ajoutée');
+
+        $url = $app["url_generator"]->generate("admin_programmationlist");
+        return $app->redirect($url);
+    }
+    // for now, don't manage the case of non-valid data
+};
+// POST
+$app->post('/admin/programmationnew', $admin_programmationnew_postaction);
+
+/**
+ * @var \Closure $admin_programmationmodify_action
+ *
+ * Gestion d'un formulaire de modification d'une programmation (gère GET et POST dans même
+ * méthode)
+ *
+ * $id : identifiant du circuit
+ */
+$admin_programmationmodify_action = function (Request $request, $id) use ($app) {
+
+    $programmation = get_programmation_by_id($id);
+
+    // prefill the form with values of the Circuit
+    $form = $app['form.factory']->createBuilder(FormType::class,
+        $programmation)
+        ->add('dateDepart')
+        ->add('nombrePersonnes')
+        ->add('prix')
+        ->add('circuit')
+        ->getForm();
+
+    $form->handleRequest($request);
+
+    // if form was posted
+    if ($form->isValid()) {
+
+        // toute les fonctions de liens avec la base de donnée sont déjà implémentées...
+        save_programmation($programmation);
+
+        $app['session']->getFlashBag()
+            ->add('message', 'programmation modifée');
+
+        return $app->redirect($app["url_generator"]->generate("admin_programmationshow",
+            array(
+                'id' => $programmation->getId()
+            )));
+    }
+
+    // display the form (GET or failed POST)
+    return $app['twig']->render('backoffice/programmationmodify.html.twig',
+        array(
+            'formulaire' => $form->createView()
+        ));
+};
+// handle both GET and POST
+$app->match('/admin/programmationmodify/{id}', $admin_programmationmodify_action)
+    ->bind('admin_programmationmodify');
+
+/**
+ * @var \Closure $admin_programmationdelete_action
+ *
+ * Gestion de la suppression d'une programmation (DELETE)
+ */
+$admin_programmationdelete_action = function ($id) use ($app) {
+
+    remove_programmation_by_id($id);
+
+    $app['session']->getFlashBag()->add('message', 'programmation suprimée');
+
+    return $app->redirect($app["url_generator"]->generate("admin_programmationlist"));
+
+};
+// DELETE (mais grâce à Request::enableHttpMethodParameterOverride)
+$app->delete('/admin/programmation/{id}', $admin_circuitdelete_action)
+    ->bind('admin_programmationdelete');
